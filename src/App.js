@@ -8,6 +8,7 @@ function App() {
     <div className="App">
       <p>Hello</p>
       {/* testing */}
+      <p>test pull request</p>
       <SortingVisualizer></SortingVisualizer>
     </div>
   );
