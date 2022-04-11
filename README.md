@@ -1,3 +1,95 @@
+# Sort visualizer
+
+This React project is designed to visualize each sorting process. Then the project will be dockerized and installed to an AWS EC2 instance with Terraform.
+
+
+# Get started with local server
+- install node js on your machine
+- cd to root directory, type "npm install" for dependencies
+- type "npm start" to start the server
+- Go to http://localhost:8080
+
+# Get started with Docker, Terraform, and AWS
+## Prerequisites
+1. AWS account
+2. AWS CLI
+3. Docker and dockerhub account
+4. Terraform
+
+## Step 1 - configure AWS CLI
+1. Go to Services, then click on IAM -> User -> Add a user
+2. Type in a Username, then select Programmatic acces for AWS
+3. Create an user group with Administrator Access -> Download.csv
+4. ### `aws configure`
+add Access Key ID and Seceret Access Key as asprompted, then choose a preferred AWS region
+
+## Step 2 - dockerize the app
+1. Create a Docker file and add the following lines:
+### `FROM node:16.13.0`
+
+### `LABEL version="1.0"`
+
+### `LABEL description="This is the base docker image for my React app"`
+
+### `LABEL maintainer="yourEmail@mail.com"`
+
+### `WORKDIR /usr/src/app`
+
+### `COPY ["package.json", "package-lock.json", "./"]`
+
+### `RUN npm install`
+
+### `COPY . .`
+
+### `EXPOSE 8080`
+
+### `CMD ["npm", "start"]`
+
+Here is an overview of the commands:
+
+FROM defines the node version that we use for our container
+
+LABEL indicates the version
+
+WORKDIR sets the working directory for the app
+
+COPY is used to copy files from one destination to another, and the last parameter is the destination to copy the files
+
+RUN defines the command to be run by Docker. I tend to use npm, but commonly yarn is used
+
+EXPOSE tells docker which port it should listen
+
+CMD defines the command to start the container
+
+2. ### `docker build -t <image-name> .` 
+- this builds the image
+
+3. ### `docker run -it -p 8080:8080 <image-name>`
+- then go to http://localhost:8080 on your browser to view the app
+4. Push the repo to docker
+
+## Step 3 - Provision the server using terraform
+My Terraform does 9 steps in general:
+1. Create vpc
+2. Create Internet Gateway
+3. Create Custom Route Table
+4. Create a subnet 
+5. Associate subnet with Route Table
+6. Create Security Group to allow port 22,80,443
+7. Create a network interface with an ip in the subnet that was created in step 4
+8. Assign an elastic IP to the network interface created in step 7
+9. Create Ubuntu server and install/enable apache2
+
+
+
+project
+1. ansible   -> provision_frontend.yaml
+2. react-app -> src + package.json + dockerfile
+3. terraform -> frontend -> main.tfw
+4 .gitignore
+5. README.md
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

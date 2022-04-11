@@ -1,35 +1,9 @@
 
-Skip to content
-Pulls
-Issues
-Marketplace
-Explore
-@jamesEmerson112
-jamesEmerson112 /
-sorting-visualizer
-Private
-
-Code
-Issues
-Pull requests
-Actions
-Projects
-Security
-Insights
-
-More
-sorting-visualizer/sorting-visualization.tf
-@jamesEmerson112
-jamesEmerson112 Create sorting-visualization.tf
-Latest commit 7893ac1 3 days ago
-History
-1 contributor
-207 lines (171 sloc) 4.69 KB
 # Configure the AWS Provider
 provider "aws"  {
-  region = AWS_DEFAULT_REGION
-  access_key = AWS_ACCESS_KEY_ID
-  secret_key = AWS_SECRET_ACCESS_KEY
+  region = "us-west-1"
+  # access_key = AWS_ACCESS_KEY_ID
+  # secret_key = AWS_SECRET_ACCESS_KEY
 }
 
 # 1. Create vpc
@@ -42,6 +16,7 @@ provider "aws"  {
 # 8. Assign an elastic IP to the network interface created in step 7
 # 9. Create Ubuntu server and install/enable apache2
 
+
 terraform {
   required_providers {
     aws = {
@@ -51,11 +26,15 @@ terraform {
   }
 }
 
-variable "subnet_prefix" {
-  description = "cidr block for the subnet"
-  # default
-  type = any
-}
+# variable "name" {
+#   description = "Sort Visualizer"
+# }
+
+# variable "subnet_prefix" {
+#   description = "cidr block for the subnet"
+#   # default
+#   type = any
+# }
 
 # 1. Create vpc
 resource "aws_vpc" "terraform-prod-vpc" {
@@ -101,7 +80,7 @@ resource "aws_subnet" "subnet-1" {
   vpc_id = aws_vpc.terraform-prod-vpc.id
 
   cidr_block = "10.0.1.0/24"
-  availability_zone = "us-east-1a"
+  availability_zone = "us-west-1b"
 
   tags = {
     Name = "prod-subnet"
@@ -181,16 +160,18 @@ resource "aws_eip" "one" {
 }
 
 # 9. Create Ubuntu server and install/enable apache2 
-resource "aws_instance" "web-server-instance" {
-  ami           = "ami-0e472ba40eb589f49"
+resource "aws_instance" "admin_frontend" {
+  ami           = "ami-04a50faf2a2ec1901"
   instance_type = "t2.micro"
-  availability_zone = "us-east-1a"
-  key_name = "main-key-terraform"
+  # availability_zone = "us-west-1"
+  # key_name = "sort-visualizer-key"
 
   network_interface {
     device_index = 0
     network_interface_id = aws_network_interface.web-server-nic.id
   }
+
+
 
   user_data = <<-EOF
               #!/bin/bash
@@ -204,7 +185,7 @@ resource "aws_instance" "web-server-instance" {
               EOF
 
   tags = {
-    Name = "Sorting visualization"
+    Name = "Sort Visualizer Instance Name"
   }
 }
 
@@ -213,11 +194,11 @@ output "server_public_ip" {
 }
 
 output "server_private_up" {
-  value = aws_instance.web-server-instance.private_ip
+  value = aws_instance.admin_frontend.private_ip
 }
 
 output "server_id" {
-  value = aws_instance.web-server-instance.id
+  value = aws_instance.admin_frontend.id
 }
 
 
@@ -232,19 +213,3 @@ output "server_id" {
 # resource "aws_vpc" "example" {
 #   cidr_block = "10.0.0.0/16"
 # }
-
-    © 2022 GitHub, Inc.
-
-    Terms
-    Privacy
-    Security
-    Status
-    Docs
-    Contact GitHub
-    Pricing
-    API
-    Training
-    Blog
-    About
-
-Loading complete
